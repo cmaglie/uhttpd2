@@ -801,8 +801,12 @@ void uh_handle_request(struct client *cl)
 {
 	struct http_request *req = &cl->request;
 	struct dispatch_handler *d;
-	char *url = blobmsg_data(blob_data(cl->hdr.head));
+	char url[1024];
+	char *orig_url = blobmsg_data(blob_data(cl->hdr.head));
 	char *error_handler;
+
+	/* Aliasing */
+	uh_alias_transform(orig_url, url, 1024);
 
 	req->redirect_status = 200;
 	d = dispatch_find(url, NULL);

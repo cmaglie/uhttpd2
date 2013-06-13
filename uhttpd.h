@@ -276,6 +276,9 @@ void client_poll_post_data(struct client *cl);
 void uh_client_read_cb(struct client *cl);
 void uh_client_notify_state(struct client *cl);
 
+void uh_alias_add(const char *from, const char *to);
+bool uh_alias_transform(const char *url, char *dest, int dest_l);
+
 void uh_auth_add(const char *path, const char *user, const char *pass);
 bool uh_auth_check(struct client *cl, struct path_info *pi);
 
