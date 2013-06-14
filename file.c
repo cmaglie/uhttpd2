@@ -805,6 +805,12 @@ void uh_handle_request(struct client *cl)
 	char *orig_url = blobmsg_data(blob_data(cl->hdr.head));
 	char *error_handler;
 
+	/* Captive portal */
+	if (req->captive_redirect) {
+		uh_captive_redirect(cl);
+		return;
+	}
+
 	/* Aliasing */
 	uh_alias_transform(orig_url, url, 1024);
 

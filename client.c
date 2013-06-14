@@ -319,6 +319,8 @@ static void client_parse_header(struct client *cl, char *data)
 			r->ua = UH_UA_GECKO;
 		else if (strstr(val, "Konqueror"))
 			r->ua = UH_UA_KONQUEROR;
+	} else if (!strcmp(data, "host")) {
+		r->captive_redirect = uh_captive_check_host(val);
 	}
 
 

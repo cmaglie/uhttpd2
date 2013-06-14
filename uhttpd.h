@@ -110,6 +110,7 @@ struct http_request {
 	bool connection_close;
 	uint8_t transfer_chunked;
 	const struct auth_realm *realm;
+	bool captive_redirect;
 };
 
 enum client_state {
@@ -275,6 +276,10 @@ void uh_handle_request(struct client *cl);
 void client_poll_post_data(struct client *cl);
 void uh_client_read_cb(struct client *cl);
 void uh_client_notify_state(struct client *cl);
+
+void uh_captive_set_host(const char *host, const char *url);
+bool uh_captive_check_host(const char *host);
+bool uh_captive_redirect(struct client *cl);
 
 void uh_alias_add(const char *from, const char *to);
 bool uh_alias_transform(const char *url, char *dest, int dest_l);

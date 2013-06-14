@@ -79,6 +79,13 @@ static void uh_config_parse(void)
 				continue;
 
 			uh_alias_add(strdup(col1), strdup(col2));
+		} else if (!strncmp(line, "C:", 2)) {
+			if (!(col1 = strchr(line, ':')) || (*col1++ = 0) ||
+				!(col2 = strchr(col1, ':')) || (*col2++ = 0) ||
+				!(eol = strchr(col2, '\n')) || (*eol++  = 0))
+				continue;
+
+			uh_captive_set_host(strdup(col1), strdup(col2));
 		} else if (!strncmp(line, "I:", 2)) {
 			if (!(col1 = strchr(line, ':')) || (*col1++ = 0) ||
 				!(eol = strchr(col1, '\n')) || (*eol++  = 0))
