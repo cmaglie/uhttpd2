@@ -53,6 +53,8 @@ static void uh_config_parse(void)
 	char line[512];
 	char *col1;
 	char *col2;
+	char *col3;
+	char *col4;
 	char *eol;
 
 	if (!path)
@@ -86,6 +88,24 @@ static void uh_config_parse(void)
 				continue;
 
 			uh_captive_set_host(strdup(col1), strdup(col2));
+		} else if (!strncmp(line, "Y:", 2)) {
+			if (!(col1 = strchr(line, ':')) || (*col1++ = 0) ||
+				!(col2 = strchr(col1, ':')) || (*col2++ = 0) ||
+				!(col3 = strchr(col2, ':')) || (*col3++ = 0))
+				continue;
+
+			if (strchr(col3, ':')) {
+				// 4 arguments
+				if (!(col4 = strchr(col3, ':')) || (*col4++ = 0) ||
+					!(eol = strchr(col4, '\n')) || (*eol++ = 0))
+					continue;
+				uh_arduino_set_timeout(atoi(col4));
+			} else {
+				// 3 arguments
+				if (!(eol = strchr(col3, '\n')) || (*eol++ = 0))
+					continue;
+			}
+			uh_arduino_set_options(strdup(col1), strdup(col2), atoi(col3));
 		} else if (!strncmp(line, "I:", 2)) {
 			if (!(col1 = strchr(line, ':')) || (*col1++ = 0) ||
 				!(eol = strchr(col1, '\n')) || (*eol++  = 0))
@@ -217,6 +237,7 @@ int main(int argc, char **argv)
 
 	BUILD_BUG_ON(sizeof(uh_buf) < PATH_MAX);
 
+	uh_dispatch_add(&arduino_dispatch);
 	uh_dispatch_add(&cgi_dispatch);
 	init_defaults();
 	signal(SIGPIPE, SIG_IGN);

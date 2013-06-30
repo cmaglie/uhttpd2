@@ -248,6 +248,7 @@ extern int n_clients;
 extern struct config conf;
 extern const char * const http_versions[];
 extern const char * const http_methods[];
+extern struct dispatch_handler arduino_dispatch;
 extern struct dispatch_handler cgi_dispatch;
 
 void uh_index_add(const char *filename);
@@ -280,6 +281,9 @@ void uh_client_notify_state(struct client *cl);
 void uh_captive_set_host(const char *host, const char *url);
 bool uh_captive_check_host(const char *host);
 bool uh_captive_redirect(struct client *cl);
+
+void uh_arduino_set_options(char *_url_prefix, char *_bridge_ip, int _bridge_port);
+void uh_arduino_set_timeout(int timeout);
 
 void uh_alias_add(const char *from, const char *to);
 bool uh_alias_transform(const char *url, char *dest, int dest_l);
