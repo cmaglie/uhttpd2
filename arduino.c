@@ -148,8 +148,28 @@ error:
 	fflush(stdout);
 }
 
+enum arduino_hdr {
+	HDR_AUTHORIZATION,
+	__HDR_MAX
+};
+
 static void arduino_handle_request(struct client *cl, char *url, struct path_info *pi)
 {
+	static const struct blobmsg_policy hdr_policy[__HDR_MAX] = {
+		[HDR_AUTHORIZATION] = { "authorization", BLOBMSG_TYPE_STRING },
+	};
+	struct blob_attr *tb[__HDR_MAX];
+	blobmsg_parse(hdr_policy, __HDR_MAX, tb, blob_data(cl->hdr.head), blob_len(cl->hdr.head));
+	struct path_info p;
+	p.auth = NULL;
+	p.name = url;
+	if (tb[HDR_AUTHORIZATION])
+		p.auth = blobmsg_data(tb[HDR_AUTHORIZATION]);
+
+	if (!uh_auth_check(cl, &p))
+		/* Authorization required! */
+		return;
+
 	if (uh_create_process(cl, pi, url, arduino_main)) 
 		return;
 
